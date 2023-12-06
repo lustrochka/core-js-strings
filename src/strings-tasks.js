@@ -149,6 +149,7 @@ function repeatString(str, times) {
  *   removeFirstOccurrences('ABABAB', 'BA') => 'ABAB'.
  */
 function removeFirstOccurrences(str, value) {
+  if (str.indexOf(value) === -1) return str;
   return str.replace(value, '');
 }
 
@@ -164,8 +165,10 @@ function removeFirstOccurrences(str, value) {
  *   removeLastOccurrences('I like legends', 'end') => 'I like legs'.
  *   removeLastOccurrences('ABABAB', 'BA') => 'ABAB'.
  */
-function removeLastOccurrences(/* str, value */) {
-  throw new Error('Not implemented');
+function removeLastOccurrences(str, value) {
+  const index = str.lastIndexOf(value);
+  if (index === -1) return str;
+  return str.slice(0, index) + str.slice(index + value.length);
 }
 
 /**
@@ -232,8 +235,10 @@ function endsWith(str, substr) {
  *   formatTime(0, 45) => "00:45"
  *   formatTime(0, 0) => "00:00"
  */
-function formatTime(/* minutes, seconds */) {
-  throw new Error('Not implemented');
+function formatTime(minutes, seconds) {
+  const min = `${minutes}`.padStart(2, '0');
+  const sec = `${seconds}`.padStart(2, '0');
+  return `${min}:${sec}`;
 }
 
 /**
@@ -261,8 +266,8 @@ function reverseString(str) {
  *   orderAlphabetically('textbook') => 'bekoottx'
  *   orderAlphabetically('abc123xyz') => '123abcxyz'
  */
-function orderAlphabetically(/* str */) {
-  throw new Error('Not implemented');
+function orderAlphabetically(str) {
+  return str.split('').sort().join('');
 }
 
 /**
@@ -277,8 +282,8 @@ function orderAlphabetically(/* str */) {
  *   containsSubstring('JavaScript is Fun', 'Python') => false
  *   containsSubstring('12345', '34') => true
  */
-function containsSubstring(/* str, substring */) {
-  throw new Error('Not implemented');
+function containsSubstring(str, substring) {
+  return str.includes(substring);
 }
 
 /**
@@ -295,8 +300,8 @@ function containsSubstring(/* str, substring */) {
  *   countVowels('aEiOu') => 5
  *   countVowels('XYZ') => 1
  */
-function countVowels(/* str */) {
-  throw new Error('Not implemented');
+function countVowels(str) {
+  return str.split(/[aeiouy]/i).length - 1;
 }
 
 /**
@@ -312,8 +317,9 @@ function countVowels(/* str */) {
  *   isPalindrome('apple') => false
  *   isPalindrome('No lemon, no melon') => true
  */
-function isPalindrome(/* str */) {
-  throw new Error('Not implemented');
+function isPalindrome(str) {
+  const modified = str.toLowerCase().replaceAll(/[^a-z]/g, '');
+  return modified.split('').reverse().join('') === modified;
 }
 
 /**
@@ -454,8 +460,28 @@ function extractEmails(str) {
  *    => 'NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm'
  *
  */
-function encodeToRot13(/* str */) {
-  throw new Error('Not implemented');
+function encodeToRot13(str) {
+  const alpha1 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const alpha2 = 'abcdefghijklmnopqrstuvwxyz';
+  const res = [];
+  for (let i = 0; i < str.length; i += 1) {
+    if (alpha1.indexOf(str[i]) !== -1) {
+      if (alpha1.indexOf(str[i]) < 13) {
+        res.push(alpha1[alpha1.indexOf(str[i]) + 13]);
+      } else {
+        res.push(alpha1[13 - (alpha1.length - alpha1.indexOf(str[i]))]);
+      }
+    } else if (alpha2.indexOf(str[i]) !== -1) {
+      if (alpha2.indexOf(str[i]) < 13) {
+        res.push(alpha2[alpha2.indexOf(str[i]) + 13]);
+      } else {
+        res.push(alpha2[13 - (alpha2.length - alpha2.indexOf(str[i]))]);
+      }
+    } else {
+      res.push(str[i]);
+    }
+  }
+  return res.join('');
 }
 
 /**
@@ -482,8 +508,27 @@ function encodeToRot13(/* str */) {
  *   'Q♠' => 50
  *   'K♠' => 51
  */
-function getCardId(/* value */) {
-  throw new Error('Not implemented');
+function getCardId(value) {
+  const num = [
+    'A',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    'J',
+    'Q',
+    'K',
+  ];
+  const suit = ['♣', '♦', '♥', '♠'];
+  if (value[0] === '1') {
+    return suit.indexOf(value[2]) * 13 + 9;
+  }
+  return suit.indexOf(value[1]) * 13 + num.indexOf(value[0]);
 }
 
 module.exports = {
